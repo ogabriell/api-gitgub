@@ -10,7 +10,7 @@ export default function handler(req, res) {
     }
 
     let resp = {
-        nome: param.name,
+        name: param.name,
     }
 
     param.repos = typeof param.repos !== 'undefined' ? param.repos : 'false'
@@ -18,7 +18,7 @@ export default function handler(req, res) {
     param.commits = typeof param.commits !== 'undefined' ? param.commits : 'false'
 
     const getTrue = async () =>{
-
+        
         const name = Object.getOwnPropertyNames(param)
         const value = Object.values(param)
 
@@ -28,6 +28,7 @@ export default function handler(req, res) {
             }
         }
         console.log(resp)
+        res.status(200).json(resp)
     }
 
     const getInfo = async (name) =>{
@@ -45,7 +46,6 @@ export default function handler(req, res) {
         if(name == "stars"){
             url = chooseUrl.repos
             const data = await getData(url)
-            console.log(url)
 
             for(let i = 0; i < data.length; i++){
                 stars += data[i].stargazers_count 
@@ -64,13 +64,12 @@ export default function handler(req, res) {
             return commits
         }
     }
-
-    async function getData(url){
-        let data = await fetch(url, {headers:{Authorization: "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"}})
+    
+    const getData = async (url) => {
+        let data = await fetch(url, {headers:{Authorization: `Token ${process.env.TOKEN}`}})
         data = await data.json()
         return data
     }
-
+    
     getTrue()
-    res.status(200).json({test: true})
 }
